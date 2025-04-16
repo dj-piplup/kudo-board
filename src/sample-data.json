@@ -16,8 +16,9 @@
   },
   {
     "timestamp": "2025-04-14T10:37:00-08:00",
-    "message": "Another natural length message. Maybe a couple lines depending on width of the card.",
-    "name": "DJPiplup"
+    "message": "This has an image with a non-square aspect ratio",
+    "name": "DJPiplup",
+    "art": "https://assets.xboxservices.com/assets/1d/5b/1d5bc84f-2135-4e2f-8ca6-bb000d97db7f.jpg?n=Elden-Ring_GLP-Poster-Image-1084_1920x1080.jpg"
   },
   {
     "timestamp": "2025-04-14T10:37:00-08:00",
