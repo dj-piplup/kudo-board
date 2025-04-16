@@ -5,7 +5,9 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --card-text: white;
+  --card-color: #444a44;
+  background-color: #1e251e;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -35,8 +37,9 @@ body {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --card-text: black;
+    --card-color: #DDDEDD;
+    background-color: #445444;
   }
 }
 

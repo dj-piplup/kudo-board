@@ -204,6 +204,7 @@ export class NimiKudoboard extends LitElement {
       border-radius: var(--card-roundness, 0.5rem);
       padding: 0;
       margin: 0;
+      box-shadow: 0 3px 6px #0003,0 3px 6px #0004
     }
   `;
 }
