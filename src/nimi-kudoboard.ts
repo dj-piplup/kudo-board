@@ -11,6 +11,7 @@ import { map } from "lit/directives/map.js";
 import DOMPurify from "dompurify";
 import { parse as parseMarkdown } from "marked";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { paintPromise } from "./paint-promise";
 
 /**
  * Kudoboard element
@@ -27,10 +28,12 @@ export class NimiKudoboard extends LitElement {
   @state()
   columns: Kudo[][] = [];
 
+  columnHeights: number[] = [];
+
   #lastKudo: number = -1;
   #lastCol: number = -1;
 
-  #cache: Record<number, { columns: Kudo[][]; lastKudo: number }> = {};
+  #cache: Record<number, { columns: Kudo[][]; lastKudo: number, lastCol: number, columnHeights: number[] }> = {};
 
   protected willUpdate(_changedProperties: PropertyValues): void {
     if (_changedProperties.has("kudos")) {
@@ -43,12 +46,16 @@ export class NimiKudoboard extends LitElement {
         this.#cache[this.columns.length] = {
           columns: this.columns,
           lastKudo: this.#lastKudo,
+          lastCol: this.#lastCol,
+          columnHeights: this.columnHeights
         };
       }
       // If we changed the column count, redo the logic
       if (this.columnCount in this.#cache) {
         this.columns = this.#cache[this.columnCount].columns;
         this.#lastKudo = this.#cache[this.columnCount].lastKudo;
+        this.#lastCol = this.#cache[this.columnCount].lastCol;
+        this.columnHeights = this.#cache[this.columnCount].columnHeights;
       } else {
         this.columns = [];
         this.#lastKudo = -1;
@@ -60,47 +67,64 @@ export class NimiKudoboard extends LitElement {
       }
       this.#lastKudo = this.columnCount - 1;
       this.#lastCol = this.columnCount - 1;
+      this.columnHeights = [];
+    }
+  }
+
+  handleScroll = () => {
+    if(Math.min(...this.columnHeights) - this.scrollTop <= window.innerHeight * 2){
+      this.removeEventListener('scroll', this.handleScroll);
+      this.requestUpdate();
     }
   }
 
   protected async updated(_changedProperties: PropertyValues): Promise<void> {
+    // Don't process the next kudo if we already got the last one
     if (this.kudos.length === 0 || this.#lastKudo === this.kudos.length - 1) {
       return;
     }
-    const domCols = this.renderRoot.querySelectorAll(".column");
-    // If the last thing we popped in was an image, we have to wait for its size to populate before we can count column heights
-    if ((this.kudos[this.#lastKudo].art?.length ?? 0) > 0) {
-      const lastEl = domCols[this.#lastCol].lastElementChild;
-      const img = lastEl!.querySelector("img")!;
-      let resolve: () => void;
-      const didResize = new Promise<void>((r) => (resolve = r));
-      const observer = new ResizeObserver((entries) => {
-        if ((entries.at(-1)?.contentBoxSize[0]!.blockSize ?? 0) > 0) {
-          resolve();
-        }
-      });
-      observer.observe(img);
-      await didResize;
+    // If we have more than 2 screens worth of cards, stop loading more cards. We can restart the loading when they scroll again
+    if(this.columnHeights.length === this.columnCount && Math.min(...this.columnHeights) - this.scrollTop > window.innerHeight * 2){
+      this.addEventListener('scroll', this.handleScroll);
+      return;
     }
+    const domCols = this.renderRoot.querySelectorAll(".column");
+    if(this.columnHeights.length === 0){
+      if(this.columns.every(col => col.length === 1)){
+        const imgs = Array.from(this.renderRoot.querySelectorAll('img'));
+        const loads = imgs.map(img => paintPromise(img));
+        await Promise.all(loads);
+      }
+      domCols.forEach(col => {
+        this.columnHeights.push(col.getBoundingClientRect().height);
+      })
+    } else {
+      const lastEl = domCols[this.#lastCol].lastElementChild;
+      // If the last thing we popped in was an image, we have to wait for its size to populate before we can count column heights
+      if ((this.kudos[this.#lastKudo].art?.length ?? 0) > 0) {
+        const img = lastEl!.querySelector("img")!;
+        await paintPromise(img);
+      }
+      const height = lastEl?.getBoundingClientRect().height!;
+      this.columnHeights[this.#lastCol] += height;
+    }
+
     let minHeight: number;
     let idx = 0;
-    if (domCols.length > 1) {
-      domCols.forEach((col, i) => {
-        const height = col.getBoundingClientRect().height;
-        if (minHeight === undefined || height < minHeight) {
-          minHeight = height;
-          idx = i;
-        }
-      });
-    }
+    this.columnHeights.forEach((height, i) => {
+      if (minHeight === undefined || height < minHeight) {
+        minHeight = height;
+        idx = i;
+      }
+    });
 
     const nextIdx = this.#lastKudo + 1;
     this.columns[idx].push({ ...this.kudos[nextIdx], tabIndex: nextIdx + 1 });
     this.#lastCol = idx;
     this.#lastKudo = nextIdx;
-      // Lit will complain about this in dev mode because it's "inefficient"
-      // However, we need to know what the rendered dom looks like between each kudo to properly place the next masonry item
-      this.requestUpdate();
+    // Lit will complain about this in dev mode because it's "inefficient"
+    // However, we need to know what the rendered dom looks like between each kudo to properly place the next masonry item
+    this.requestUpdate();
   }
 
   processMessage(markdown: string) {
