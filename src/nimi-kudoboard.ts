@@ -22,7 +22,7 @@ export class NimiKudoboard extends LitElement {
   kudos: Kudo[] = [];
 
   @property()
-  columnCount: number = 2;
+  columnCount: number = 3;
 
   @state()
   columns: Kudo[][] = [];
@@ -147,11 +147,12 @@ export class NimiKudoboard extends LitElement {
       display: grid;
       column-gap: 1rem;
       grid-auto-flow: column;
-      grid-auto-columns: 1fr;
+      grid-auto-columns: minmax(auto, 500px);
       grid-template-rows: 1fr;
       padding-top: 1rem;
       padding-inline: 1rem;
       align-items: flex-start;
+      justify-content: center;
       overflow-x: hidden;
       overflow-y: auto;
     }

@@ -15,7 +15,7 @@
       import { createDistributor } from './src/column-distribution.ts';
       const board = document.body.querySelector('nimi-kudoboard')
       board.kudos = data;
-      const observer = createDistributor({minWidth: 360, maxCount: 5, onChange: (count) => board.columnCount = count});
+      const observer = createDistributor({minWidth: 360, maxCount: 3, onChange: (count) => board.columnCount = count});
       observer.observe(board);
     </script>
   </body>
