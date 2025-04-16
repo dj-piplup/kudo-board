@@ -184,6 +184,9 @@ export class NimiKudoboard extends LitElement {
       display: flex;
       justify-content: flex-end;
       height: 0.9rem;
+      & > p {
+        margin: 0;
+      }
     }
     :host::part(card-name) {
       font-size: 0.9rem;
@@ -200,18 +203,6 @@ export class NimiKudoboard extends LitElement {
       border-radius: var(--card-roundness, 0.5rem);
       padding: 0;
       margin: 0;
-      p {
-        margin: 0;
-      }
-      button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        img {
-          height: 1rem;
-          width: 1rem;
-        }
-      }
     }
   `;
 }
