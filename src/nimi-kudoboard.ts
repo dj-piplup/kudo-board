@@ -59,6 +59,7 @@ export class NimiKudoboard extends LitElement {
         this.columns.push([{ ...this.kudos[i], tabIndex: i + 1 }]);
       }
       this.#lastKudo = this.columnCount - 1;
+      this.#lastCol = this.columnCount - 1;
     }
   }
 
