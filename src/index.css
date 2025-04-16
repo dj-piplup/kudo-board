@@ -6,7 +6,8 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   --card-text: white;
-  --card-color: #444a44;
+  --card-color: #393D39;
+  --card-username: #AAA;
   background-color: #1e251e;
 
   font-synthesis: none;
@@ -41,6 +42,7 @@ body {
   :root {
     --card-text: black;
     --card-color: #DDDEDD;
+    --card-username: #888;
     background-color: #445444;
   }
 }

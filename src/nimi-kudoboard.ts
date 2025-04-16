@@ -215,7 +215,7 @@ export class NimiKudoboard extends LitElement {
     }
     :host::part(card-name) {
       font-size: 0.9rem;
-      color: color-mix(in hsl, var(--card-text, black), white 50%);
+      color: var(--card-username, #888);
     }
     :host::part(card-image) {
       width: 100%;
