@@ -19,5 +19,6 @@
     "firebase-tools": "^14.1.0",
     "typescript": "~5.7.2",
     "vite": "^6.2.0"
-  }
+  },
+  "packageManager": "pnpm@10.8.0"
 }
