@@ -31,8 +31,9 @@
   },
   {
     "timestamp": "2025-04-14T10:37:00-08:00",
-    "message": "Another natural length message. Maybe a couple lines depending on width of the card.",
-    "name": "DJPiplup"
+    "message": "This one has an image to test how that works.",
+    "name": "DJPiplup",
+    "art": "https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/img_1623_96.jpeg"
   },
   {
     "timestamp": "2025-04-14T10:37:00-08:00",

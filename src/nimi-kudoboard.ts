@@ -141,6 +141,9 @@ export class NimiKudoboard extends LitElement {
     font-size: 0.9rem;
     color: color-mix(in hsl, var(--card-text, black), white 50%); 
   }
+  :host::part(card-image){
+    width: 100%;
+  }
   article {
     background-color: var(--card-color, white);
     color: var(--card-text, black);
