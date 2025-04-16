@@ -6,9 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "fb:login": "firebase login",
-    "fb:logout": "firebase logout"
+    "preview": "vite preview"
   },
   "dependencies": {
     "dompurify": "^3.2.5",
